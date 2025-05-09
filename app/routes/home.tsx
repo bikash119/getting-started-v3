@@ -10,8 +10,9 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function clientLoader({params,request}: Route.ClientLoaderArgs){
+export async function loader({params,request,context}: Route.LoaderArgs){
   try{
+    console.log(context)
     const url = new URL(request.url)
     const response = await fetch(`${url.origin}/api`)
     if(response.ok){
