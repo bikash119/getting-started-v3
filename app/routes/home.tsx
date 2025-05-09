@@ -8,10 +8,20 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function loader({ context }: Route.LoaderArgs) {
-  return { message: context.cloudflare.env.VALUE_FROM_CLOUDFLARE };
+export async function loader({ context,request }: Route.LoaderArgs) {
+  const url = new URL(request.url)
+  const response = await fetch(`${url.origin}/api`)
+  if(!response.ok){
+    console.log(`[Loader] : fetch api failed : ${response.status}`)
+    return {message: "Fetch call failed"}
+  }
+  const rawData = await response.json()
+  return rawData;
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.message} />;
+  if(!loaderData) return <h1> Message from nowhere</h1>
+  const {message} = loaderData
+  console.log(message)
+  return <h1>Message from {message}</h1>;
 }
