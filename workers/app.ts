@@ -26,7 +26,9 @@ app.get("*", async (c) => {
     cloudflare: { env: c.env as Env, ctx: c.executionCtx as ExecutionContext },
   });
 });
-
+app.all("*", async (c) => {
+  return c.env.ASSETS.fetch(c.req.raw);
+});
 
 
 export default {
